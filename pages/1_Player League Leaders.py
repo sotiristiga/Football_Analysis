@@ -22,7 +22,7 @@ primaryColor="#FF4B4B"
 
 st.set_page_config(layout='wide', page_title="Standings")
 
-dataset=pd.read_csv('C:/Users/surve/OneDrive/Desktop/Tiganitas work/EUROLEAGUE/stats/basketnews stats/superleague2425.csv')
+dataset=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2425.csv")
 
 selected_ha = st.sidebar.selectbox("Home or Away games:",['Away', 'Home', 'All'],index=2)
 selected_season = st.sidebar.selectbox("Season:",['All','2024-2025'],index=0)
