@@ -18,7 +18,6 @@ from itables import to_html_datatable
 from streamlit.components.v1 import html
 from plotly.subplots import make_subplots
 
-primaryColor="#FF4B4B"
 
 st.set_page_config(layout='wide', page_title="Standings")
 
