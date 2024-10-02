@@ -20,6 +20,7 @@ from plotly.subplots import make_subplots
 
 
 
+
 st.set_page_config(layout='wide', page_title="Standings")
 
 dataset=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2425.csv")
