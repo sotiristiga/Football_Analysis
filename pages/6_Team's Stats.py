@@ -204,6 +204,8 @@ computeteamstats_on_games_mean["Duels(%)"] = (100 * computeteamstats_on_games_me
 computeteamstats_on_games_mean["Duels(%)"] = computeteamstats_on_games_mean["Duels(%)"].fillna(0)
 computeteamstats_on_games_mean["Aerial duels(%)"] = (100 * computeteamstats_on_games_mean["Aerial duels won"] / computeteamstats_on_games_mean["Aerial duels"]).round(1)
 computeteamstats_on_games_mean["Aerial duels(%)"] = computeteamstats_on_games_mean["Aerial duels(%)"].fillna(0)
+computeteamstats_on_games_mean["Ground duels(%)"] = (100 * computeteamstats_on_games_mean["Ground duels won"] / computeteamstats_on_games_mean["Ground duels"]).round(1)
+computeteamstats_on_games_mean["Ground duels(%)"] = computeteamstats_on_games_mean["Ground duels(%)"].fillna(0)
 computeteamstats_on_games_mean["Runs out(%)"] = (100 * computeteamstats_on_games_mean["Runs out succ"] / computeteamstats_on_games_mean["Runs out"]).round(1)
 computeteamstats_on_games_mean["Runs out(%)"] = computeteamstats_on_games_mean["Runs out(%)"].fillna(0)
 
@@ -235,10 +237,10 @@ with basic:
     with total:
         basic_total=computeteamstats_on_games_total.groupby('Team')[["Goals","opp Goals",'Assists','opp Assists','Yellow card','opp Yellow card','Red card','opp Red card']].sum().reset_index()
         interactive_table(basic_total.filter(regex=regex1).set_index('Team'),
-        paging=False, height=900, width=2000, showIndex=True,
+        paging=False, height=900, width=100, showIndex=True,
         classes="display order-column nowrap table_with_monospace_font", searching=True,
         fixedColumns=True, select=True, info=False, scrollCollapse=True,
-        scrollX=True, scrollY=1000, fixedHeader=True, scroller=True, filter='bottom',
+        scrollX=True, scrollY=600, fixedHeader=True, scroller=True, filter='left',
         columnDefs=[{"className": "dt-center", "targets": "_all"}])
     with pergame:
         basic_mean=computeteamstats_on_games_mean[["Team","Goals","opp Goals",'Assists','opp Assists','Yellow card','opp Yellow card','Red card','opp Red card']]
@@ -275,7 +277,213 @@ with attack:
              'Dribble attempts','opp Dribble attempts', 'Penalty won','opp Penalty won', 'Big chances missed',  'opp Big chances missed','Penalty miss','opp Penalty miss',
              'Hit woodwork','opp Hit woodwork', 'Offsides', 'opp Offsides']]
         interactive_table(attack_mean.filter(regex=regex1).set_index('Team'),
+                          paging=False, height=900, width=500, showIndex=True,
+                          classes="display order-column nowrap table_with_monospace_font", searching=True,
+                          fixedColumns=True, select=True, info=False, scrollCollapse=True,
+                          scrollX=True, scrollY=1000, fixedHeader=True, scroller=True, filter='bottom',
+                          columnDefs=[{"className": "dt-center", "targets": "_all"}])
+
+
+with defence:
+    defenceselectors=st.selectbox("Select Stat:",['Defensive actions', 'Clearances',
+       'Blocked shots', 'Interceptions', 'Total tackles', 'Dribbled past',
+       'Penalty committed', 'Own goals', 'Last man tackle',
+       'Error led to shot', 'Clearance off line', 'Error led to goal'])
+    total, pergame = st.tabs(['Total', 'Per Game'])
+    regex1 = "Team|" + defenceselectors
+    with total:
+        defence_total=computeteamstats_on_games_total.groupby('Team')[['Defensive actions', 'opp Defensive actions','Clearances','opp Clearances',
+       'Blocked shots',  'opp Blocked shots','Interceptions', 'opp Interceptions','Total tackles', 'opp Total tackles','Dribbled past','opp Dribbled past',
+       'Penalty committed', 'opp Penalty committed','Own goals', 'opp Own goals','Last man tackle','opp Last man tackle',
+       'Error led to shot', 'opp Error led to shot', 'Clearance off line', 'opp Clearance off line','Error led to goal', 'opp Error led to goal']].sum().reset_index()
+        interactive_table(defence_total.filter(regex=regex1).set_index('Team'),
                           paging=False, height=900, width=2000, showIndex=True,
+                          classes="display order-column nowrap table_with_monospace_font", searching=True,
+                          fixedColumns=True, select=True, info=False, scrollCollapse=True,
+                          scrollX=True, scrollY=1000, fixedHeader=True, scroller=True, filter='bottom',
+                          columnDefs=[{"className": "dt-center", "targets": "_all"}])
+    with pergame:
+        defence_mean=computeteamstats_on_games_mean[["Team",'Defensive actions', 'Clearances',
+       'Blocked shots', 'Interceptions', 'Total tackles', 'Dribbled past',
+       'Penalty committed', 'Own goals', 'Last man tackle',
+       'Error led to shot', 'Clearance off line', 'Error led to goal','opp Defensive actions', 'opp Clearances',
+        'opp Blocked shots', 'opp Interceptions',
+        'opp Total tackles', 'opp Dribbled past',
+        'opp Penalty committed', 'opp Own goals',
+        'opp Last man tackle',
+        'opp Error led to shot',
+        'opp Clearance off line',
+        'opp Error led to goal']]
+        interactive_table(defence_mean.filter(regex=regex1).set_index('Team'),
+                          paging=False, height=900, width=500, showIndex=True,
+                          classes="display order-column nowrap table_with_monospace_font", searching=True,
+                          fixedColumns=True, select=True, info=False, scrollCollapse=True,
+                          scrollX=True, scrollY=1000, fixedHeader=True, scroller=True, filter='bottom',
+                          columnDefs=[{"className": "dt-center", "targets": "_all"}])
+
+
+with duels:
+    duelsselectors=st.selectbox("Select Stat:",['Duels',
+       'Ground duels',  'Aerial duels',
+       'Possession lost', 'Foul'])
+    total, pergame = st.tabs(['Total', 'Per Game'])
+    regex1 = "Team|" + duelsselectors
+    with total:
+        duels_total=computeteamstats_on_games_total.groupby('Team')[['Duels', 'Duels won',
+       'Ground duels', 'Ground duels won', 'Aerial duels', 'Aerial duels won',
+       'Possession lost', 'Fouls', 'Was fouled','opp Duels',
+        'opp Duels won',
+        'opp Ground duels', 'opp Ground duels won',
+        'opp Aerial duels', 'opp Aerial duels won',
+        'opp Possession lost', 'opp Fouls']].sum().reset_index()
+        duels_total["Duels(%)"] = (
+                    100 * duels_total["Duels won"] / duels_total["Duels"]).round(1)
+        duels_total["Duels(%)"] = duels_total["Duels(%)"].fillna(0)
+        duels_total["Aerial duels(%)"] = (
+                    100 * duels_total["Aerial duels won"] / duels_total[
+                "Aerial duels"]).round(1)
+        duels_total["Aerial duels(%)"] = duels_total["Aerial duels(%)"].fillna(0)
+        duels_total["Ground duels(%)"] = (
+                    100 * duels_total["Ground duels won"] / duels_total[
+                "Ground duels"]).round(1)
+        duels_total["Ground duels(%)"] = duels_total["Ground duels(%)"].fillna(0)
+        duels_total ["opp Duels(%)"] = (
+                100 * duels_total ["opp Duels won"] / duels_total ["opp Duels"]).round(1)
+        duels_total ["opp Duels(%)"] = duels_total ["opp Duels(%)"].fillna(0)
+        duels_total ["opp Aerial duels(%)"] = (
+                100 * duels_total ["opp Aerial duels won"] / duels_total[
+            "opp Aerial duels"]).round(1)
+        duels_total ["opp Aerial duels(%)"] = duels_total ["opp Aerial duels(%)"].fillna(0)
+        duels_total ["opp Ground duels(%)"] = (
+                100 * duels_total ["opp Ground duels won"] / duels_total[
+            "opp Ground duels"]).round(1)
+        duels_total ["opp Ground duels(%)"] = duels_total ["opp Ground duels(%)"].fillna(0)
+        duels_total.drop(['opp Duels',"opp Aerial duels","opp Ground duels"],axis=1,inplace=True)
+        interactive_table(duels_total.filter(regex=regex1).set_index('Team'),
+                          paging=False, height=900, width=2000, showIndex=True,
+                          classes="display order-column nowrap table_with_monospace_font", searching=True,
+                          fixedColumns=True, select=True, info=False, scrollCollapse=True,
+                          scrollX=True, scrollY=1000, fixedHeader=True, scroller=True, filter='bottom',
+                          columnDefs=[{"className": "dt-center", "targets": "_all"}])
+    with pergame:
+        duels_mean=computeteamstats_on_games_mean[["Team",'Duels', 'Duels won',"Duels(%)",
+       'Ground duels', 'Ground duels won',"Ground duels(%)", 'Aerial duels', 'Aerial duels won',"Aerial duels(%)",
+       'Possession lost', 'Fouls', 'Was fouled',
+        'opp Duels won',
+         'opp Ground duels won',
+         'opp Aerial duels won',
+        'opp Possession lost', 'opp Fouls',"opp Duels(%)","opp Aerial duels(%)","opp Ground duels(%)"]]
+        interactive_table(duels_mean.filter(regex=regex1).set_index('Team'),
+                          paging=False, height=900, width=500, showIndex=True,
+                          classes="display order-column nowrap table_with_monospace_font", searching=True,
+                          fixedColumns=True, select=True, info=False, scrollCollapse=True,
+                          scrollX=True, scrollY=1000, fixedHeader=True, scroller=True, filter='bottom',
+                          columnDefs=[{"className": "dt-center", "targets": "_all"}])
+
+
+with passing:
+    passingselectors=st.selectbox("Select Stat:",['Touches','Passes',
+       'Crosses',  'Long balls',
+       'Big chances created'])
+    total, pergame = st.tabs(['Total', 'Per Game'])
+    regex1 = "Team|" + passingselectors
+    with total:
+        passing_total=computeteamstats_on_games_total.groupby('Team')[['Touches', 'Accurate passes', 'Total passes',
+       'Key passes', 'Total Crosses', 'Accurate Crosses', 'Total Long balls',
+       'Accurate Long balls', 'Big chances created', 'opp Touches', 'opp Accurate passes',
+        'opp Total passes',
+        'opp Key passes', 'opp Total Crosses',
+        'opp Accurate Crosses', 'opp Total Long balls',
+        'opp Accurate Long balls',
+        'opp Big chances created']].sum().reset_index()
+        passing_total["Passes(%)"] = (
+                    100 * passing_total["Accurate passes"] / passing_total[
+                "Total passes"]).round(1)
+        passing_total["Passes(%)"] = passing_total["Passes(%)"].fillna(0)
+        passing_total["Crosses(%)"] = (
+                    100 * passing_total["Accurate Crosses"] / passing_total[
+                "Total Crosses"]).round(1)
+        passing_total["Crosses(%)"] = passing_total["Crosses(%)"].fillna(0)
+        passing_total["Long balls(%)"] = (
+                    100 * passing_total["Accurate Long balls"] / passing_total[
+                "Total Long balls"]).round(1)
+        passing_total["Long balls(%)"] = passing_total["Long balls(%)"].fillna(0)
+        passing_total["opp Passes(%)"] = (
+                100 * passing_total["opp Accurate passes"] / passing_total[
+            "opp Total passes"]).round(1)
+        passing_total["opp Passes(%)"] = passing_total["opp Passes(%)"].fillna(0)
+        passing_total["opp Crosses(%)"] = (
+                100 * passing_total["opp Accurate Crosses"] / passing_total[
+            "opp Total Crosses"]).round(1)
+        passing_total["opp Crosses(%)"] = passing_total["opp Crosses(%)"].fillna(0)
+        passing_total["opp Long balls(%)"] = (
+                100 * passing_total["opp Accurate Long balls"] / passing_total[
+            "opp Total Long balls"]).round(1)
+        passing_total["opp Long balls(%)"] = passing_total["opp Long balls(%)"].fillna(0)
+        passing_total=passing_total.rename(columns={ 'Accurate passes': 'Accurate Passes','Total passes':'Total Passes','Key passes':'Key Passes', 'opp Accurate passes':'opp Accurate Passes',
+        'opp Total passes':'opp Total Passes','opp Key passes':'opp Key Passes'})
+        interactive_table(passing_total.filter(regex=regex1).set_index('Team'),
+                          paging=False, height=900, width=2000, showIndex=True,
+                          classes="display order-column nowrap table_with_monospace_font", searching=True,
+                          fixedColumns=True, select=True, info=False, scrollCollapse=True,
+                          scrollX=True, scrollY=1000, fixedHeader=True, scroller=True, filter='bottom',
+                          columnDefs=[{"className": "dt-center", "targets": "_all"}])
+    with pergame:
+        passing_mean=computeteamstats_on_games_mean[["Team",'Touches', 'Accurate passes', 'Total passes',
+       'Key passes', 'Total Crosses', 'Accurate Crosses', 'Total Long balls',
+       'Accurate Long balls', 'Big chances created', 'opp Touches', 'opp Accurate passes',
+        'opp Total passes',
+        'opp Key passes', 'opp Total Crosses',
+        'opp Accurate Crosses', 'opp Total Long balls',
+        'opp Accurate Long balls',
+        'opp Big chances created',"Passes(%)","opp Passes(%)","Crosses(%)","opp Crosses(%)","Long balls(%)","opp Long balls(%)"]]
+        interactive_table(passing_mean.filter(regex=regex1).set_index('Team'),
+                          paging=False, height=900, width=500, showIndex=True,
+                          classes="display order-column nowrap table_with_monospace_font", searching=True,
+                          fixedColumns=True, select=True, info=False, scrollCollapse=True,
+                          scrollX=True, scrollY=1000, fixedHeader=True, scroller=True, filter='bottom',
+                          columnDefs=[{"className": "dt-center", "targets": "_all"}])
+
+with goalkeeping:
+    goalkeepingselectors=st.selectbox("Select Stat:",['Saves','Punches', 'Runs out','High claims','Penalties saved'])
+    total, pergame = st.tabs(['Total', 'Per Game'])
+    regex1 = "Team|" + goalkeepingselectors
+    with total:
+        goalkeeping_total=computeteamstats_on_games_total.groupby('Team')[['Saves',
+       'Punches', 'Runs out', 'Runs out succ', 'High claims',
+       'Saves from inside box', 'Penalties saved','opp Saves',
+       'opp Punches', 'opp Runs out',
+       'opp Runs out succ',
+       'opp High claims',
+       'opp Saves from inside box',
+       'opp Penalties saved']].sum().reset_index()
+        goalkeeping_total["Runs out(%)"] = (
+                    100 * goalkeeping_total["Runs out succ"] / goalkeeping_total[
+                "Runs out"]).round(1)
+        goalkeeping_total["Runs out(%)"] = goalkeeping_total["Runs out(%)"].fillna(0)
+        goalkeeping_total["opp Runs out(%)"] = (
+                    100 * goalkeeping_total["opp Runs out succ"] / goalkeeping_total[
+                "opp Runs out"]).round(1)
+        goalkeeping_total["opp Runs out(%)"] = goalkeeping_total["opp Runs out(%)"].fillna(0)
+        goalkeeping_total=goalkeeping_total.rename(columns={ 'Accurate passes': 'Accurate Passes','Total passes':'Total Passes','Key passes':'Key Passes', 'opp Accurate passes':'opp Accurate Passes',
+        'opp Total passes':'opp Total Passes','opp Key passes':'opp Key Passes'})
+        interactive_table(goalkeeping_total.filter(regex=regex1).set_index('Team'),
+                          paging=False, height=900, width=2000, showIndex=True,
+                          classes="display order-column nowrap table_with_monospace_font", searching=True,
+                          fixedColumns=True, select=True, info=False, scrollCollapse=True,
+                          scrollX=True, scrollY=1000, fixedHeader=True, scroller=True, filter='bottom',
+                          columnDefs=[{"className": "dt-center", "targets": "_all"}])
+    with pergame:
+        goalkeeping_mean=computeteamstats_on_games_mean[["Team",'Saves',
+       'Punches', 'Runs out', 'Runs out succ', 'High claims',
+       'Saves from inside box', 'Penalties saved','opp Saves',
+       'opp Punches', 'opp Runs out',
+       'opp Runs out succ',
+       'opp High claims',
+       'opp Saves from inside box',
+       'opp Penalties saved',"Runs out(%)","opp Runs out(%)"]]
+        interactive_table(goalkeeping_mean.filter(regex=regex1).set_index('Team'),
+                          paging=False, height=900, width=500, showIndex=True,
                           classes="display order-column nowrap table_with_monospace_font", searching=True,
                           fixedColumns=True, select=True, info=False, scrollCollapse=True,
                           scrollX=True, scrollY=1000, fixedHeader=True, scroller=True, filter='bottom',
