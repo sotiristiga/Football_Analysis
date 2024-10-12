@@ -305,12 +305,12 @@ try:
                         domain={'x': [0, 1], 'y': [0, 1]},
                         gauge={'axis': {'range': [None, 100]},
                                'bordercolor': "gray"},
-                        title={'text': "Overall<br>Rating"+ selected_Player1}))
+                        title={'text': "Overall<br>Rating<br>"+ selected_Player1}))
 
         ov1.update_layout(
                     autosize=False,
                     width=200,
-                    height=200,
+                    height=250,
                     margin=dict(
                         l=30,
                         r=50,
@@ -335,12 +335,12 @@ try:
             domain={'x': [0, 1], 'y': [0, 1]},
             gauge={'axis': {'range': [None, 100]},
                    'bordercolor': "gray"},
-            title={'text': "Overall<br>Rating"+ selected_Player2}))
+            title={'text': "Overall<br>Rating<br>"+ selected_Player2}))
 
         ov2.update_layout(
             autosize=False,
             width=200,
-            height=200,
+            height=250,
             margin=dict(
                 l=30,
                 r=50,
