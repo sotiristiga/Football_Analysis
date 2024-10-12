@@ -305,12 +305,12 @@ try:
                         domain={'x': [0, 1], 'y': [0, 1]},
                         gauge={'axis': {'range': [None, 100]},
                                'bordercolor': "gray"},
-                        title={'text': "Overall<br>Rating"}))
+                        title={'text': "Overall<br>Rating"+ selected_Player1}))
 
         ov1.update_layout(
                     autosize=False,
-                    width=250,
-                    height=250,
+                    width=200,
+                    height=200,
                     margin=dict(
                         l=30,
                         r=50,
@@ -335,12 +335,12 @@ try:
             domain={'x': [0, 1], 'y': [0, 1]},
             gauge={'axis': {'range': [None, 100]},
                    'bordercolor': "gray"},
-            title={'text': "Overall<br>Rating"}))
+            title={'text': "Overall<br>Rating"+ selected_Player1}))
 
         ov2.update_layout(
             autosize=False,
-            width=250,
-            height=250,
+            width=200,
+            height=200,
             margin=dict(
                 l=30,
                 r=50,
@@ -939,8 +939,3 @@ try:
         st.write(gauge2gk)
 except:
     st.error('No data availale with these parameters')
-
-
-
-
-
