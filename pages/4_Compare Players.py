@@ -335,7 +335,7 @@ try:
             domain={'x': [0, 1], 'y': [0, 1]},
             gauge={'axis': {'range': [None, 100]},
                    'bordercolor': "gray"},
-            title={'text': "Overall<br>Rating"+ selected_Player1}))
+            title={'text': "Overall<br>Rating"+ selected_Player2}))
 
         ov2.update_layout(
             autosize=False,
