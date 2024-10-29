@@ -261,7 +261,7 @@ with Superstats:
 
             interactive_table(
                 basic_stats_total.set_index('Player'),
-                paging=False, height=900, width=2000, showIndex=True,
+                paging=False, height=990, width=2000, showIndex=True,
                 classes="display order-column nowrap table_with_monospace_font", searching=True,
                 fixedColumns=True, select=True, info=False, scrollCollapse=True,
                 scrollX=True, scrollY=1000, fixedHeader=True, scroller=True, filter='bottom',
@@ -270,7 +270,7 @@ with Superstats:
             basic_stats_mean=computeplayerstats_mean_sel[['Player','Games','Minutes played','Goals', 'Assists', 'Yellow card', 'Red card']]
             interactive_table(
                 basic_stats_mean.set_index('Player'),
-                paging=False, height=900, width=2000, showIndex=True,
+                paging=False, height=990, width=2000, showIndex=True,
                 classes="display order-column nowrap table_with_monospace_font", searching=True,
                 fixedColumns=True, select=True, info=False, scrollCollapse=True,
                 scrollX=True, scrollY=1000, fixedHeader=True, scroller=True, filter='bottom',
