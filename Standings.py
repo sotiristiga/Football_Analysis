@@ -18,7 +18,9 @@ from itables import to_html_datatable
 from streamlit.components.v1 import html
 from plotly.subplots import make_subplots
 st.set_page_config(layout='wide', page_title="Standings")
-dataset=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2425.csv")
+dataset2324=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2324.csv")
+dataset2425=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2425.csv")
+dataset=pd.concat([dataset2324,dataset2425])
 selected_ha = st.sidebar.selectbox("Home or Away games:",['Away', 'Home', 'All'],index=2)
 selected_season = st.sidebar.selectbox("Season:",['All','2023-2024','2024-2025'],index=0)
 selected_phase = st.sidebar.selectbox("Phase:",['Regular Season', 'Play offs', 'Play out','All'],index=3)
