@@ -211,48 +211,48 @@ for i in colsminus:
     players_ratings2 = pd.merge(players_ratings2, df3)
 
 players_ratings = pd.merge(players_ratings1, players_ratings2)
+
+player,over=st.columns(2)
+with player:
+    selected_Player = st.selectbox("Player:", dataset_filter['Player'].reset_index().sort_values('Player')['Player'].unique())
+    computeplayerstats_total_sel=computeplayerstats_total.loc[computeplayerstats_total.Player==selected_Player]
+    computeplayerstats_mean_sel=computeplayerstats_mean.loc[computeplayerstats_mean.Player==selected_Player]
+    computeplayerstats_mean_sel['Player']=computeplayerstats_mean_sel['Player']+" "+select_season+" "+select_phase+" "+select_round+" "+select_ha+" "+select_wl
+    computeplayerstats_total_sel['Player'] = computeplayerstats_total_sel['Player'] + " " + select_season + " " + select_phase + " " + select_round + " " + select_ha + " " + select_wl
+    players_ratings_sel = players_ratings.loc[players_ratings.Player == selected_Player]
+    try:
+        st.write('##### Team: '+dataset_filter.loc[dataset_filter.Player==selected_Player]['Team'].unique()[0])
+        st.write('##### Position: ' + dataset_filter.loc[dataset_filter.Player == selected_Player]['Position'].unique()[0])
+    except:
+        st.error('No data available with these parameters')
+
+with over:
+    try:
+        ov=go.Figure(go.Indicator(
+                            mode="gauge+number",
+                            value=players_ratings_sel.melt(id_vars='Player')['value'].mean().round(0),
+                            domain={'x': [0, 1], 'y': [0, 1]},
+                            gauge={'axis': {'range': [None, 100]},
+                                   'bordercolor': "gray"},
+                            title={'text': "Overall<br>Rating"}))
+
+        ov.update_layout(
+                    autosize=False,
+                    width=150,
+                    height=200,
+                    margin=dict(
+                        l=0,
+                        r=0,
+                        b=0,
+                        t=20,
+                        pad=0
+                    ))
+
+        st.write(ov)
+    except:
+        st.error('No data available with these parameters')
 Superstats,bygame=st.tabs(['Superleague Stats','Stats by game'])
 with Superstats:
-    player,over=st.columns(2)
-    with player:
-        selected_Player = st.selectbox("Player:", dataset_filter['Player'].reset_index().sort_values('Player')['Player'].unique())
-        computeplayerstats_total_sel=computeplayerstats_total.loc[computeplayerstats_total.Player==selected_Player]
-        computeplayerstats_mean_sel=computeplayerstats_mean.loc[computeplayerstats_mean.Player==selected_Player]
-        computeplayerstats_mean_sel['Player']=computeplayerstats_mean_sel['Player']+" "+select_season+" "+select_phase+" "+select_round+" "+select_ha+" "+select_wl
-        computeplayerstats_total_sel['Player'] = computeplayerstats_total_sel['Player'] + " " + select_season + " " + select_phase + " " + select_round + " " + select_ha + " " + select_wl
-        players_ratings_sel = players_ratings.loc[players_ratings.Player == selected_Player]
-        try:
-            st.write('##### Team: '+dataset_filter.loc[dataset_filter.Player==selected_Player]['Team'].unique()[0])
-            st.write('##### Position: ' + dataset_filter.loc[dataset_filter.Player == selected_Player]['Position'].unique()[0])
-        except:
-            st.error('No data available with these parameters')
-
-    with over:
-        try:
-            ov=go.Figure(go.Indicator(
-                                mode="gauge+number",
-                                value=players_ratings_sel.melt(id_vars='Player')['value'].mean().round(0),
-                                domain={'x': [0, 1], 'y': [0, 1]},
-                                gauge={'axis': {'range': [None, 100]},
-                                       'bordercolor': "gray"},
-                                title={'text': "Overall<br>Rating"}))
-
-            ov.update_layout(
-                        autosize=False,
-                        width=150,
-                        height=200,
-                        margin=dict(
-                            l=0,
-                            r=0,
-                            b=0,
-                            t=20,
-                            pad=0
-                        ))
-
-            st.write(ov)
-        except:
-            st.error('No data available with these parameters')
-
     try:
         st.write("#### Basic Stats")
         totalbasic,pergamebasic=st.tabs(['Total','Per Game'])
