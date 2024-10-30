@@ -103,3 +103,5 @@ Team_Standings=Team_Standings[['Rank','Team','Points','Games','Wins','Draws','Lo
 interactive_table(Team_Standings.set_index('Rank'),
                       paging=False,height=960,width=20000,showIndex=True,classes="display order-column nowrap table_with_monospace_font",searching=False,fixedColumns=True,select=True,info=False,scrollCollapse=True,
         scrollX=True,scrollY=1000,fixedHeader=True,scroller=True,columnDefs=[{"className": "dt-center", "targets": "_all"}])
+
+st.write('2023-2024: Olympiacos-Panathinaikos on Regular Season had postponed due to riots and could not record data')
