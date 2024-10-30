@@ -22,11 +22,14 @@ from plotly.subplots import make_subplots
 
 st.set_page_config(layout='wide', page_title="Standings")
 
-dataset=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2425.csv")
+dataset2324=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2324.csv")
+dataset2425=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2425.csv")
+dataset=pd.concat([dataset2324,dataset2425])
+
 
 selected_Team1 = st.sidebar.selectbox("Choose First Team:", dataset['Team'].reset_index().sort_values('Team')['Team'].unique())
 selected_ha1 = st.sidebar.selectbox("Home or Away games (First Team):",['Away', 'Home', 'All'],index=2)
-selected_season1 = st.sidebar.selectbox("Season (First Team):",['All','2024-2025'],index=0)
+selected_season1 = st.sidebar.selectbox("Season (First Team):",['All',,'2024-2025'],index=0)
 selected_phase1 = st.sidebar.selectbox("Phase (First Team):",['Regular Season', 'Play offs', 'Play out','All'],index=3)
 selected_wl1 = st.sidebar.selectbox("Result (First Team):",['Win','Draw', 'Lose','All'],index=3)
 selected_round1 = st.sidebar.selectbox("Round (First Team):",['First Round', 'Second Round', 'All'],index=2)
