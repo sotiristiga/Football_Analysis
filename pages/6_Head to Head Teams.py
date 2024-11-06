@@ -22,14 +22,15 @@ from plotly.subplots import make_subplots
 
 st.set_page_config(layout='wide', page_title="Compare Teams")
 
+dataset2223=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2223.csv")
 dataset2324=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2324.csv")
 dataset2425=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2425.csv")
-dataset=pd.concat([dataset2324,dataset2425])
+dataset=pd.concat([dataset2324,dataset2425,dataset2223])
 
 
 selected_Team1 = st.sidebar.selectbox("Choose First Team:", dataset['Team'].reset_index().sort_values('Team')['Team'].unique())
 selected_ha1 = st.sidebar.selectbox("Home or Away games (First Team):",['Away', 'Home', 'All'],index=2)
-selected_season1 = st.sidebar.selectbox("Season (First Team):",['All','2023-2024','2024-2025'],index=0)
+selected_season1 = st.sidebar.selectbox("Season (First Team):",['All','2022-2023','2023-2024','2024-2025'],index=0)
 selected_phase1 = st.sidebar.selectbox("Phase (First Team):",['Regular Season', 'Play offs', 'Play out','All'],index=3)
 selected_wl1 = st.sidebar.selectbox("Result (First Team):",['Win','Draw', 'Lose','All'],index=3)
 selected_round1 = st.sidebar.selectbox("Round (First Team):",['First Round', 'Second Round', 'All'],index=2)
@@ -38,7 +39,7 @@ st.sidebar.write("## ")
 st.sidebar.write("## Second Team filters")
 selected_Team2 = st.sidebar.selectbox("Choose Second Team:", dataset['Team'].reset_index().sort_values('Team')['Team'].unique(),index=1)
 selected_ha2 = st.sidebar.selectbox("Home or Away games (Second Team):",['Away', 'Home', 'All'],index=2)
-selected_season2 = st.sidebar.selectbox("Season (Second Team):",['All','2023-2024','2024-2025'],index=0)
+selected_season2 = st.sidebar.selectbox("Season (Second Team):",['All','2022-2023','2023-2024','2024-2025'],index=0)
 selected_phase2 = st.sidebar.selectbox("Phase (Second Team):",['Regular Season', 'Play offs', 'Play out','All'],index=3)
 selected_wl2 = st.sidebar.selectbox("Result (Second Team):",['Win','Draw', 'Lose','All'],index=3)
 selected_round2 = st.sidebar.selectbox("Round (Second Team):",['First Round', 'Second Round', 'All'],index=2)
@@ -54,7 +55,7 @@ try:
         select_ha1 = selected_ha1
 
     if "All" in selected_season1:
-        selected_season1 = ['2016-2017', '2017-2018', '2018-2019', '2019-2020','2020-2021','2021-2022', '2022-2023','2023-2024','2024-2025']
+        selected_season1 = ['2022-2023','2023-2024','2024-2025']
         dataset_filter1=dataset_filter1.loc[dataset_filter1['Season'].isin(selected_season1)]
         select_season1 = ''
     else:
@@ -99,7 +100,7 @@ try:
         select_ha2 = selected_ha2
 
     if "All" in selected_season2:
-        selected_season2 = ['2016-2017', '2017-2018', '2018-2019', '2019-2020','2020-2021','2021-2022', '2022-2023','2023-2024','2024-2025']
+        selected_season2 = ['2022-2023','2023-2024','2024-2025']
         dataset_filter2=dataset_filter2.loc[dataset_filter2['Season'].isin(selected_season2)]
         select_season2 = ''
     else:
