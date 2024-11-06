@@ -23,13 +23,15 @@ from plotly.subplots import make_subplots
 
 st.set_page_config(layout='wide', page_title="Compare Players")
 
+dataset2223=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2223.csv")
 dataset2324=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2324.csv")
 dataset2425=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2425.csv")
-dataset=pd.concat([dataset2324,dataset2425])
+dataset=pd.concat([dataset2324,dataset2425,dataset2223])
+
 
 selected_Player1 = st.sidebar.selectbox("Choose First Player:", dataset['Player'].reset_index().sort_values('Player')['Player'].unique())
 selected_ha1 = st.sidebar.selectbox("Home or Away games (First Player):",['Away', 'Home', 'All'],index=2)
-selected_season1 = st.sidebar.selectbox("Season (First Player):",['All',"2023-2024",'2024-2025'],index=2)
+selected_season1 = st.sidebar.selectbox("Season (First Player):",['All','2022-2023',"2023-2024",'2024-2025'],index=2)
 selected_phase1 = st.sidebar.selectbox("Phase (First Player):",['Regular Season', 'Play offs', 'Play out','All'],index=3)
 selected_wl1 = st.sidebar.selectbox("Result (First Player):",['Win','Draw', 'Lose','All'],index=3)
 selected_round1 = st.sidebar.selectbox("Round (First Player):",['First Round', 'Second Round', 'All'],index=2)
@@ -38,7 +40,7 @@ st.sidebar.write("## ")
 st.sidebar.write("## Second Player filters")
 selected_Player2 = st.sidebar.selectbox("Choose Second Player:", dataset['Player'].reset_index().sort_values('Player')['Player'].unique(),index=1)
 selected_ha2 = st.sidebar.selectbox("Home or Away games (Second Player):",['Away', 'Home', 'All'],index=2)
-selected_season2 = st.sidebar.selectbox("Season (Second Player):",['All',"2023-2024",'2024-2025'],index=2)
+selected_season2 = st.sidebar.selectbox("Season (Second Player):",['All','2022-2023',"2023-2024",'2024-2025'],index=2)
 selected_phase2 = st.sidebar.selectbox("Phase (Second Player):",['Regular Season', 'Play offs', 'Play out','All'],index=3)
 selected_wl2 = st.sidebar.selectbox("Result (Second Player):",['Win','Draw', 'Lose','All'],index=3)
 selected_round2 = st.sidebar.selectbox("Round (Second Player):",['First Round', 'Second Round', 'All'],index=2)
