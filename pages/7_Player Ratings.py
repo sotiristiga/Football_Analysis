@@ -27,7 +27,7 @@ dataset2324=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football
 dataset2425=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2425.csv")
 dataset=pd.concat([dataset2324,dataset2425,dataset2223])
 selected_ha = st.sidebar.selectbox("Home or Away games:",['Away', 'Home', 'All'],index=2)
-selected_season = st.sidebar.selectbox("Season:",['All','2022-2023,"2023-2024",'2024-2025'],index=2)
+selected_season = st.sidebar.selectbox("Season:",['All','2022-2023,"2023-2024",'2024-2025'],index=3)
 selected_phase = st.sidebar.selectbox("Phase:",['Regular Season', 'Play offs', 'Play out','All'],index=3)
 selected_wl = st.sidebar.selectbox("Result:",['Win','Draw', 'Lose','All'],index=3)
 selected_round = st.sidebar.selectbox("Round:",['First Round', 'Second Round', 'All'],index=2)
