@@ -31,7 +31,7 @@ dataset=pd.concat([dataset2324,dataset2425,dataset2223])
 
 selected_Player1 = st.sidebar.selectbox("Choose First Player:", dataset['Player'].reset_index().sort_values('Player')['Player'].unique())
 selected_ha1 = st.sidebar.selectbox("Home or Away games (First Player):",['Away', 'Home', 'All'],index=2)
-selected_season1 = st.sidebar.selectbox("Season (First Player):",['All','2022-2023',"2023-2024",'2024-2025'],index=2)
+selected_season1 = st.sidebar.selectbox("Season (First Player):",['All','2022-2023',"2023-2024",'2024-2025'],index=3)
 selected_phase1 = st.sidebar.selectbox("Phase (First Player):",['Regular Season', 'Play offs', 'Play out','All'],index=3)
 selected_wl1 = st.sidebar.selectbox("Result (First Player):",['Win','Draw', 'Lose','All'],index=3)
 selected_round1 = st.sidebar.selectbox("Round (First Player):",['First Round', 'Second Round', 'All'],index=2)
@@ -40,7 +40,7 @@ st.sidebar.write("## ")
 st.sidebar.write("## Second Player filters")
 selected_Player2 = st.sidebar.selectbox("Choose Second Player:", dataset['Player'].reset_index().sort_values('Player')['Player'].unique(),index=1)
 selected_ha2 = st.sidebar.selectbox("Home or Away games (Second Player):",['Away', 'Home', 'All'],index=2)
-selected_season2 = st.sidebar.selectbox("Season (Second Player):",['All','2022-2023',"2023-2024",'2024-2025'],index=2)
+selected_season2 = st.sidebar.selectbox("Season (Second Player):",['All','2022-2023',"2023-2024",'2024-2025'],index=3)
 selected_phase2 = st.sidebar.selectbox("Phase (Second Player):",['Regular Season', 'Play offs', 'Play out','All'],index=3)
 selected_wl2 = st.sidebar.selectbox("Result (Second Player):",['Win','Draw', 'Lose','All'],index=3)
 selected_round2 = st.sidebar.selectbox("Round (Second Player):",['First Round', 'Second Round', 'All'],index=2)
@@ -56,7 +56,7 @@ try:
         select_ha1 = selected_ha1
 
     if "All" in selected_season1:
-        selected_season1 = ['2016-2017', '2017-2018', '2018-2019', '2019-2020','2020-2021','2021-2022', '2022-2023','2023-2024','2024-2025']
+        selected_season1 = ['2022-2023','2023-2024','2024-2025']
         dataset_filter1=dataset_filter1.loc[dataset_filter1['Season'].isin(selected_season1)]
         select_season1 = ''
     else:
@@ -101,7 +101,7 @@ try:
         select_ha2 = selected_ha2
 
     if "All" in selected_season2:
-        selected_season2 = ['2016-2017', '2017-2018', '2018-2019', '2019-2020','2020-2021','2021-2022', '2022-2023','2023-2024','2024-2025']
+        selected_season2 = ['2022-2023','2023-2024','2024-2025']
         dataset_filter2=dataset_filter2.loc[dataset_filter2['Season'].isin(selected_season2)]
         select_season2 = ''
     else:
