@@ -27,46 +27,68 @@ selected_season = st.sidebar.selectbox("Season:",['All','2022-2023','2023-2024',
 selected_phase = st.sidebar.selectbox("Phase:",['Regular Season', 'Play offs', 'Play out','All'],index=3)
 selected_wl = st.sidebar.selectbox("Result:",['Win','Draw', 'Lose','All'],index=3)
 selected_round = st.sidebar.selectbox("Round:",['First Round', 'Second Round', 'All'],index=2)
+teamsscored=dataset.groupby(['Team','Against','idseason'])[['Goals','Own goals']].sum().reset_index().rename(columns={'Goals':'Goals Team','Own goals':'Own goals Against'})
+againstscored=teamsscored.rename(columns={'Goals Team':'Goals Against','Own goals Against':'Own goals Team'})
+againstscored.drop('Against',axis=1,inplace=True)
+againstscored=againstscored.rename(columns={'Team':'Against'})
+goals=pd.merge(teamsscored,againstscored,how='left')
+
+goals['Goals Scored']=goals['Goals Team']+goals['Own goals Team']
+goals['Goals Conceed']=goals['Goals Against']+goals['Own goals Against']
+
+infodataset=dataset.groupby( ['Team', 'Against', 'idseason', 'Home_Away', 'Season', 'Round', 'Result','Phase']).count().reset_index()[['Team', 'Against', 'idseason', 'Home_Away', 'Season', 'Round', 'Result','Phase']]
+goals=pd.merge(infodataset,goals)
+
 
 
 if "All" in selected_ha:
-    selected_ha = ['Away', 'Home',]
+    selected_ha = ['Away', 'Home']
     dataset_filter=dataset.loc[dataset['Home_Away'].isin(selected_ha)]
+    goals_filter = goals.loc[goals['Home_Away'].isin(selected_ha)]
     select_ha=''
 else:
     dataset_filter=dataset.loc[dataset['Home_Away']==selected_ha]
+    goals_filter = goals.loc[goals['Home_Away'] == selected_ha]
     select_ha = selected_ha
 
 if "All" in selected_season:
     selected_season = [ '2022-2023','2023-2024','2024-2025']
     dataset_filter=dataset_filter.loc[dataset_filter['Season'].isin(selected_season)]
+    goals_filter = goals_filter.loc[goals_filter['Season'].isin(selected_season)]
     select_season = ''
 else:
     dataset_filter=dataset_filter.loc[dataset_filter['Season']==selected_season]
+    goals_filter = goals_filter.loc[goals_filter['Season'] == selected_season]
     select_season = selected_season
 
 if "All" in selected_wl:
     selected_wl = ['Win','Draw', 'Lose']
     dataset_filter = dataset_filter.loc[dataset_filter['Result'].isin(selected_wl)]
+    goals_filter = goals_filter.loc[goals_filter['Result'].isin(selected_wl)]
     select_wl = ''
 else:
     dataset_filter= dataset_filter.loc[dataset_filter['Result'] == selected_wl]
+    goals_filter = goals_filter.loc[goals_filter['Result'] == selected_wl]
     select_wl = selected_wl
 
 if "All" in selected_phase:
     selected_phase = ['Regular Season', 'Play offs', 'Play out']
     dataset_filter = dataset_filter.loc[dataset_filter['Phase'].isin(selected_phase)]
+    goals_filter = goals_filter.loc[goals_filter['Phase'].isin(selected_phase)]
     select_phase = ''
 else:
     dataset_filter = dataset_filter.loc[dataset_filter['Phase'] == selected_phase]
+    goals_filter = goals_filter.loc[goals_filter['Phase'].isin(selected_phase)]
     select_phase = selected_phase
 
 if "All" in selected_round:
     selected_round = ['First Round', 'Second Round', ]
     dataset_filter = dataset_filter.loc[dataset_filter['Round'].isin(selected_round)]
+    goals_filter = goals_filter.loc[goals_filter['Round'].isin(selected_round)]
     select_round = ''
 else:
     dataset_filter = dataset_filter.loc[dataset_filter['Round'] == selected_round]
+    goals_filter = goals_filter.loc[goals_filter['Round'] == selected_round]
     select_round = selected_round
 
 
@@ -83,16 +105,10 @@ Team_Standings['Loses']=Team_Standings['Loses'].fillna(0)
 Team_Standings['Draws']=Team_Standings['Draws'].fillna(0)
 Team_Standings['Points']=Team_Standings['Wins']*3+Team_Standings['Draws']*1
 
-teamsscored=dataset_filter.groupby(['Team','Against','idseason'])[['Goals','Own goals']].sum().reset_index().rename(columns={'Goals':'Goals Team','Own goals':'Own goals Against'})
-againstscored=teamsscored.rename(columns={'Goals Team':'Goals Against','Own goals Against':'Own goals Team'})
-againstscored.drop('Against',axis=1,inplace=True)
-againstscored=againstscored.rename(columns={'Team':'Against'})
+total_goals=goals_filter.groupby('Team')[['Goals Scored','Goals Conceed']].sum().reset_index()
 
-goals=pd.merge(teamsscored,againstscored)
 
-goals['Goals Scored']=goals['Goals Team']+goals['Own goals Team']
-goals['Goals Conceed']=goals['Goals Against']+goals['Own goals Against']
-total_goals=goals.groupby('Team')[['Goals Scored','Goals Conceed']].sum().reset_index()
+
 
 Team_Standings=pd.merge(Team_Standings,total_goals,how='left',on='Team').sort_values('Points',ascending=False).reset_index()
 Team_Standings.drop('index',axis=1,inplace=True)
