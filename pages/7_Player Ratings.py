@@ -242,6 +242,7 @@ passing=players_ratings[
 
 goalkeeping=players_ratings[['Player','Rating Saves', 'Rating Punches', 'Rating Runs out succ', 'Rating Runs out', 'Rating Runs out(%)', 'Rating High claims', 'Rating Saves from inside box',
                  'Rating Penalties saved']].melt(id_vars='Player').groupby('Player')['value'].mean().round(0).reset_index().rename(columns={'value':'Goalkeeping'})
+goalkeeping['Goalkeeping']=goalkeeping['Goalkeeping'].fillna(50)
 
 finaldataset=pd.merge(attack,passing)
 finaldataset=pd.merge(finaldataset,defense,on='Player')
