@@ -260,11 +260,14 @@ try:
                     'Total Long balls', "Long balls(%)",
                     'Big chances created', 'Duels won', 'Duels', "Duels(%)", 'Ground duels won', 'Ground duels',
                     "Ground duels(%)", 'Aerial duels won', 'Aerial duels', "Aerial duels(%)",
-                    'Was fouled', 'Saves', 'Punches', 'Runs out succ', 'Runs out', "Runs out(%)", 'High claims',
-                    'Saves from inside box', 'Penalties saved', 'Defensive actions']
+                    'Was fouled']
         colsminus = ['Red card', 'Big chances missed', 'Penalty miss', 'Hit woodwork', 'Dribbled past', 'Penalty committed',
                      'Own goals', 'Error led to shot', 'Error led to goal', 'Possession lost',
                      'Fouls', 'Offsides']
+        colplusgk=[ 'Punches', 'Runs out succ', 'Runs out', "Runs out(%)", 'High claims',
+                'Saves from inside box', 'Penalties saved', 'Defensive actions']
+
+        computeplayerstats_mean_gk=computeplayerstats_mean[['Player','Saves', 'Punches', 'Runs out 
         players_ratings1 = player_rating_stat_higher(computeplayerstats_mean, 'Goals')
         for i in colsplus:
             df2 = player_rating_stat_higher(computeplayerstats_mean, i)
@@ -276,6 +279,12 @@ try:
             players_ratings2 = pd.merge(players_ratings2, df3)
 
         players_ratings = pd.merge(players_ratings1, players_ratings2)
+        players_ratingsgk = player_rating_stat_higher(computeplayerstats_mean_gk, 'Saves')
+        for i in colplusgk:
+            df2 = player_rating_stat_higher(computeplayerstats_mean_gk, i)
+            players_ratingsgk = pd.merge(players_ratingsgk, df2)
+        
+        players_ratings=pd.merge(players_ratings,players_ratingsgk,how='left')
         computeplayerstats_mean_sel=computeplayerstats_mean.loc[computeplayerstats_mean.Player==player]
         computeplayerstats_mean_sel['Player']=computeplayerstats_mean_sel['Player']+" "+sls+" "+slp+" "+slr+" "+slha+" "+slwl
         computeplayerstats_total_sel['Player'] = computeplayerstats_total_sel['Player'] + " " + sls + " " + slp + " " + slr + " " + slha + " " + slwl
