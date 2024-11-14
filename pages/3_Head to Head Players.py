@@ -267,7 +267,8 @@ try:
         colplusgk=[ 'Punches', 'Runs out succ', 'Runs out', "Runs out(%)", 'High claims',
                 'Saves from inside box', 'Penalties saved', 'Defensive actions']
 
-        computeplayerstats_mean_gk=computeplayerstats_mean[['Player','Saves', 'Punches', 'Runs out 
+        computeplayerstats_mean_gk=computeplayerstats_mean[['Player','Saves', 'Punches', 'Runs out succ', 'Runs out', "Runs out(%)", 'High claims',
+                'Saves from inside box', 'Penalties saved', 'Defensive actions']].dropna()
         players_ratings1 = player_rating_stat_higher(computeplayerstats_mean, 'Goals')
         for i in colsplus:
             df2 = player_rating_stat_higher(computeplayerstats_mean, i)
