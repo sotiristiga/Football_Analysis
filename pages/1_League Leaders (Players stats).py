@@ -165,7 +165,7 @@ with total:
         paging=True, height=1500, width=2000, showIndex=True,
         classes="display order-column nowrap table_with_monospace_font", searching=True,
         fixedColumns=True, select=True, info=False, scrollCollapse=True,
-        scrollX=True, scrollY=1000, fixedHeader=True, scroller=True, filter='bottom',
+        scrollX=True, scrollY=1200, fixedHeader=True, scroller=True, filter='bottom',
         columnDefs=[{"className": "dt-center", "targets": "_all"}])
 with pergame:
     st.write('### Per Game')
@@ -178,5 +178,5 @@ with pergame:
         paging=True, height=1500, width=2000, showIndex=True,
         classes="display order-column nowrap table_with_monospace_font", searching=True,
         fixedColumns=True, select=True, info=False, scrollCollapse=True,
-        scrollX=True, scrollY=1000, fixedHeader=True, scroller=True, filter='bottom',
+        scrollX=True, scrollY=1200, fixedHeader=True, scroller=True, filter='bottom',
         columnDefs=[{"className": "dt-center", "targets": "_all"}])
