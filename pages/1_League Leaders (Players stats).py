@@ -162,7 +162,7 @@ with total:
     playersleaders_total['Rank']=playersleaders_total['index']+1
     interactive_table(
         playersleaders_total[['Rank','Player',selected_stats]].set_index('Rank'),
-        paging=True, height=1000, width=2000, showIndex=True,
+        paging=True, height=1500, width=2000, showIndex=True,
         classes="display order-column nowrap table_with_monospace_font", searching=True,
         fixedColumns=True, select=True, info=False, scrollCollapse=True,
         scrollX=True, scrollY=1000, fixedHeader=True, scroller=True, filter='bottom',
@@ -175,7 +175,7 @@ with pergame:
     playersleaders_mean['Rank']=playersleaders_mean['index']+1
     interactive_table(
         playersleaders_mean[['Rank','Player',selected_stats]].set_index('Rank'),
-        paging=True, height=1000, width=2000, showIndex=True,
+        paging=True, height=1500, width=2000, showIndex=True,
         classes="display order-column nowrap table_with_monospace_font", searching=True,
         fixedColumns=True, select=True, info=False, scrollCollapse=True,
         scrollX=True, scrollY=1000, fixedHeader=True, scroller=True, filter='bottom',
