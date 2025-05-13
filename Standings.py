@@ -22,11 +22,18 @@ dataset2223=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football
 dataset2324=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2324.csv")
 dataset2425=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2425.csv")
 dataset=pd.concat([dataset2324,dataset2425,dataset2223])
-selected_ha = st.sidebar.selectbox("Home or Away games:",['Away', 'Home', 'All'],index=2)
-selected_season = st.sidebar.selectbox("Season:",['All','2022-2023','2023-2024','2024-2025'],index=3)
-selected_phase = st.sidebar.selectbox("Phase:",['Regular Season', 'Play offs', "Play In",'Play out','All'],index=3)
-selected_wl = st.sidebar.selectbox("Result:",['Win','Draw', 'Lose','All'],index=3)
-selected_round = st.sidebar.selectbox("Round:",['First Round', 'Second Round', 'All'],index=2)
+f1,f2,f3,f4,f5=st.columns(5)
+with f1:
+    selected_season = st.selectbox("Season:", ['All', '2022-2023', '2023-2024', '2024-2025'], index=3)
+with f2:
+    selected_phase = st.selectbox("Phase:", ['Regular Season', 'Play offs', "Play In", 'Play out', 'All'], index=4)
+with f3:
+    selected_round = st.selectbox("Round:", ['First Round', 'Second Round', 'All'], index=2)
+with f4:
+    selected_ha = st.selectbox("Home or Away games:",['Away', 'Home', 'All'],index=2)
+with f5:
+    selected_wl = st.selectbox("Result:",['Win','Draw', 'Lose','All'],index=3)
+
 teamsscored=dataset.groupby(['Team','Against','idseason'])[['Goals','Own goals']].sum().reset_index().rename(columns={'Goals':'Goals Team','Own goals':'Own goals Against'})
 againstscored=teamsscored.rename(columns={'Goals Team':'Goals Against','Own goals Against':'Own goals Team'})
 againstscored.drop('Against',axis=1,inplace=True)
@@ -78,11 +85,11 @@ if "All" in selected_phase:
     select_phase = ''
 else:
     dataset_filter = dataset_filter.loc[dataset_filter['Phase'] == selected_phase]
-    goals_filter = goals_filter.loc[goals_filter['Phase'].isin(selected_phase)]
+    goals_filter = goals_filter.loc[goals_filter['Phase']==selected_phase]
     select_phase = selected_phase
 
 if "All" in selected_round:
-    selected_round = ['First Round', 'Second Round', ]
+    selected_round = ['First Round', 'Second Round' ]
     dataset_filter = dataset_filter.loc[dataset_filter['Round'].isin(selected_round)]
     goals_filter = goals_filter.loc[goals_filter['Round'].isin(selected_round)]
     select_round = ''
