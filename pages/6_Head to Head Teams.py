@@ -26,23 +26,43 @@ dataset2223=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football
 dataset2324=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2324.csv")
 dataset2425=pd.read_csv(f"https://raw.githubusercontent.com/sotiristiga/Football_Analysis/refs/heads/main/superleague2425.csv")
 dataset=pd.concat([dataset2324,dataset2425,dataset2223])
+st.sidebar.markdown('''
+  * ## [Filters](#filters)
+  * ## [Basic Stats](#basic-stats)
+  * ## [Attack Stats](#attack-stats)
+  * ## [Defence Stats](#defence-stats)
+  * ## [Duels Stats](#duels-stats)
+  * ## [Passing Stats](#passing-stats)
+  * ## [Goalkeeping Stats](#goalkeeping-stats)   
 
+''', unsafe_allow_html=True)
+st.header("Filters")
 
-selected_Team1 = st.sidebar.selectbox("Choose First Team:", dataset['Team'].reset_index().sort_values('Team')['Team'].unique())
-selected_ha1 = st.sidebar.selectbox("Home or Away games (First Team):",['Away', 'Home', 'All'],index=2)
-selected_season1 = st.sidebar.selectbox("Season (First Team):",['All','2022-2023','2023-2024','2024-2025'],index=0)
-selected_phase1 = st.sidebar.selectbox("Phase (First Team):",['Regular Season', 'Play offs', 'Play out','All'],index=3)
-selected_wl1 = st.sidebar.selectbox("Result (First Team):",['Win','Draw', 'Lose','All'],index=3)
-selected_round1 = st.sidebar.selectbox("Round (First Team):",['First Round', 'Second Round', 'All'],index=2)
+f1,f2=st.columns(2)
+with f1:
+    st.write("## First Team filters")
+    col1, col2, = st.columns(2)
+    with col1:
 
-st.sidebar.write("## ")
-st.sidebar.write("## Second Team filters")
-selected_Team2 = st.sidebar.selectbox("Choose Second Team:", dataset['Team'].reset_index().sort_values('Team')['Team'].unique(),index=1)
-selected_ha2 = st.sidebar.selectbox("Home or Away games (Second Team):",['Away', 'Home', 'All'],index=2)
-selected_season2 = st.sidebar.selectbox("Season (Second Team):",['All','2022-2023','2023-2024','2024-2025'],index=0)
-selected_phase2 = st.sidebar.selectbox("Phase (Second Team):",['Regular Season', 'Play offs', 'Play out','All'],index=3)
-selected_wl2 = st.sidebar.selectbox("Result (Second Team):",['Win','Draw', 'Lose','All'],index=3)
-selected_round2 = st.sidebar.selectbox("Round (Second Team):",['First Round', 'Second Round', 'All'],index=2)
+        selected_Team1 = st.selectbox("Choose First Team:", dataset['Team'].reset_index().sort_values('Team')['Team'].unique())
+        selected_ha1 = st.selectbox("Home or Away games (First Team):",['Away', 'Home', 'All'],index=2)
+        selected_season1 = st.selectbox("Season (First Team):",['All','2022-2023','2023-2024','2024-2025'],index=0)
+    with col2:
+        selected_phase1 = st.selectbox("Phase (First Team):",['Regular Season', 'Play offs', "Play In",'Play out','All'],index=4)
+        selected_wl1 = st.selectbox("Result (First Team):",['Win','Draw', 'Lose','All'],index=3)
+        selected_round1 = st.selectbox("Round (First Team):",['First Round', 'Second Round', 'All'],index=2)
+
+with f2:
+    st.write("## Second Team filters")
+    col3, col4, = st.columns(2)
+    with col3:
+        selected_Team2 = st.selectbox("Choose Second Team:", dataset['Team'].reset_index().sort_values('Team')['Team'].unique(),index=1)
+        selected_ha2 = st.selectbox("Home or Away games (Second Team):",['Away', 'Home', 'All'],index=2)
+        selected_season2 = st.selectbox("Season (Second Team):",['All','2022-2023','2023-2024','2024-2025'],index=0)
+    with col4:
+        selected_phase2 = st.selectbox("Phase (Second Team):",['Regular Season', 'Play offs', "Play In",'Play out','All'],index=4)
+        selected_wl2 = st.selectbox("Result (Second Team):",['Win','Draw', 'Lose','All'],index=3)
+        selected_round2 = st.selectbox("Round (Second Team):",['First Round', 'Second Round', 'All'],index=2)
 
 try:
 
@@ -71,7 +91,7 @@ try:
         select_wl1 = selected_wl1
 
     if "All" in selected_phase1:
-        selected_phase1 = ['Regular Season', 'Play offs', 'Play out']
+        selected_phase1 = ['Regular Season', 'Play offs', "Play In",'Play out']
         dataset_filter1 = dataset_filter1.loc[dataset_filter1['Phase'].isin(selected_phase1)]
         select_phase1 = ''
     else:
@@ -79,7 +99,7 @@ try:
         select_phase1 = selected_phase1
 
     if "All" in selected_round1:
-        selected_round1 = ['First Round', 'Second Round', ]
+        selected_round1 = ['First Round', 'Second Round' ]
         dataset_filter1 = dataset_filter1.loc[dataset_filter1['Round'].isin(selected_round1)]
         select_round1 = ''
     else:
@@ -117,7 +137,7 @@ try:
         select_wl2 = selected_wl2
 
     if "All" in selected_phase2:
-        selected_phase2 = ['Regular Season', 'Play offs', 'Play out']
+        selected_phase2 = ['Regular Season', 'Play offs', "Play In",'Play out']
         dataset_filter2 = dataset_filter2.loc[dataset_filter2['Phase'].isin(selected_phase2)]
         select_phase2 = ''
     else:
@@ -597,8 +617,7 @@ try:
                           scrollX=True, scrollY=1000, fixedHeader=True, scroller=True, filter='bottom',
                           columnDefs=[{"className": "dt-center", "targets": "_all"}])
 
-
-
+    st.write("### Passing Stats")
     total, pergame = st.tabs(['Total', 'Per Game'])
     with total:
         passing_total1=teams1sums[["Team",'Touches', 'opp Touches', 'Accurate passes', 'Total passes',"Passes(%)",
