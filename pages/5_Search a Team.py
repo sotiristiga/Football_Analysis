@@ -36,8 +36,16 @@ st.sidebar.markdown('''
   * ## [Players Stats](#players-stats)  
   * ## [Stats by game](#stats-by-game)
 ''', unsafe_allow_html=True)
+
+def ha_against_format(HA):
+    if HA == "A":
+        return "H"
+    elif HA == "H":
+        return "A"
+dataset["HA1"] = dataset['Home_Away'].apply(ha_against_format)
 st.header("Filters")
 f1,f2,f3,f4,f5,f6=st.columns(6)
+
 with f2:
     selected_season = st.selectbox("Season:", ['All', '2022-2023', '2023-2024', '2024-2025'], index=3)
 with f3:
@@ -50,51 +58,76 @@ with f6:
     selected_wl = st.selectbox("Result:",['Win','Draw', 'Lose','All'],index=3)
 
 if "All" in selected_ha:
-    selected_ha = ['Away', 'Home', ]
-    dataset_filter = dataset.loc[dataset['Home_Away'].isin(selected_ha)]
+    selected_ha = ['Away', 'Home' ]
+    dataset_filter1 = dataset.loc[dataset['Home_Away'].isin(selected_ha)]
+    dataset_filter2 = dataset.loc[dataset['HA1'].isin(selected_ha)]
     select_ha = ''
-else:
-    dataset_filter = dataset.loc[dataset['Home_Away'] == selected_ha]
+elif selected_ha=="Home":
+    dataset_filter1 = dataset.loc[dataset['Home_Away'] =="Home"]
+    dataset_filter2 = dataset.loc[dataset['Home_Away'] == "Away"]
+    select_ha = selected_ha
+elif selected_ha=="Away":
+    dataset_filter2 = dataset.loc[dataset['Home_Away'] =="Home"]
+    dataset_filter1 = dataset.loc[dataset['Home_Away'] == "Away"]
     select_ha = selected_ha
 
 if "All" in selected_season:
     selected_season = ['2022-2023',
                        '2023-2024', '2024-2025']
-    dataset_filter = dataset_filter.loc[dataset_filter['Season'].isin(selected_season)]
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Season'].isin(selected_season)]
+    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Season'].isin(selected_season)]
     select_season = ''
 else:
-    dataset_filter = dataset_filter.loc[dataset_filter['Season'] == selected_season]
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Season'] == selected_season]
+    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Season'] == selected_season]
     select_season = selected_season
 
 if "All" in selected_wl:
     selected_wl = ['Win', 'Draw', 'Lose']
-    dataset_filter = dataset_filter.loc[dataset_filter['Result'].isin(selected_wl)]
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Result'].isin(selected_wl)]
     select_wl = ''
-else:
-    dataset_filter = dataset_filter.loc[dataset_filter['Result'] == selected_wl]
+elif selected_wl=='Win':
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Result'] == 'Win']
+    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Result'] == 'Lose']
+    select_wl = selected_wl
+
+elif selected_wl=='Lose':
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Result'] == 'Lose']
+    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Result'] == 'Win']
+    select_wl = selected_wl
+
+elif selected_wl=='Draw':
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Result'] == 'Draw']
+    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Result'] == 'Draw']
     select_wl = selected_wl
 
 if "All" in selected_phase:
     selected_phase = ['Regular Season', 'Play offs', "Play In",'Play out']
-    dataset_filter = dataset_filter.loc[dataset_filter['Phase'].isin(selected_phase)]
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Phase'].isin(selected_phase)]
+    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Phase'].isin(selected_phase)]
     select_phase = ''
 else:
-    dataset_filter = dataset_filter.loc[dataset_filter['Phase'] == selected_phase]
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Phase'] == selected_phase]
+    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Phase'] == selected_phase]
     select_phase = selected_phase
 
 if "All" in selected_round:
-    selected_round = ['First Round', 'Second Round', ]
-    dataset_filter = dataset_filter.loc[dataset_filter['Round'].isin(selected_round)]
+    selected_round = ['First Round', 'Second Round']
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Round'].isin(selected_round)]
+    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Round'].isin(selected_round)]
     select_round = ''
 else:
-    dataset_filter = dataset_filter.loc[dataset_filter['Round'] == selected_round]
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Round'] == selected_round]
+    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Round'] == selected_round]
     select_round = selected_round
+
+
 with f1:
-    selected_Team = st.selectbox("Team:", dataset_filter['Team'].reset_index().sort_values('Team')['Team'].unique())
+    selected_Team = st.selectbox("Team:", dataset_filter1['Team'].reset_index().sort_values('Team')['Team'].unique())
 
 
-def computeteamstats(dataset, Team_Select):
-    computeTeamstats_on_games = dataset.groupby(["idseason", 'Team'])[[
+def computeteamstats(dataset1,dataset2, Team_Select):
+    computeTeamstats_on_games = dataset1.groupby(["idseason", 'Team'])[[
         'Goals', 'Assists', 'Yellow card', 'Red card', 'Shots on target',
         'Shots off target', 'Shots blocked', 'Dribble attempts',
         'Dribble attempts succ', 'Penalty won', 'Big chances missed',
@@ -139,7 +172,7 @@ def computeteamstats(dataset, Team_Select):
                 100 * computeTeamstats_on_games["Runs out succ"] / computeTeamstats_on_games["Runs out"]).round(1)
     computeTeamstats_on_games["Runs out(%)"] = computeTeamstats_on_games["Runs out(%)"].fillna(0)
 
-    computeAgainststats_on_games = dataset.groupby(['idseason', 'Against'])[[
+    computeAgainststats_on_games = dataset2.groupby(['idseason', 'Against'])[[
         'Goals', 'Assists', 'Yellow card', 'Red card', 'Shots on target',
         'Shots off target', 'Shots blocked', 'Dribble attempts',
         'Dribble attempts succ', 'Penalty won', 'Big chances missed',
@@ -426,8 +459,8 @@ def computeteamstats(dataset, Team_Select):
     return [computeteamstats_on_games_sum, computeteamstats_on_games_mean]
 
 
-teamssums = computeteamstats(dataset_filter, selected_Team)[0]
-teamswins = computeteamstats(dataset_filter, selected_Team)[1]
+teamssums = computeteamstats(dataset_filter1, dataset_filter2,selected_Team)[0]
+teamswins = computeteamstats(dataset_filter1, dataset_filter2, selected_Team)[1]
 st.write('## Team: ' + selected_Team)
 
 st.write('### Basic Stats')
@@ -935,4 +968,3 @@ try:
 
 except:
     st.error('No data available for these parameters')
-
