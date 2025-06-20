@@ -66,72 +66,10 @@ with f5:
     selected_wl = st.selectbox("Result:",['Win','Draw', 'Lose','All'],index=3)
 
 
-if "All" in selected_ha:
-    selected_ha = ['Away', 'Home']
-    dataset_filter1 = dataset.loc[dataset['Home_Away'].isin(selected_ha)]
-    dataset_filter2 = dataset.loc[dataset['HA1'].isin(selected_ha)]
-    select_ha = ''
-elif selected_ha=="Home":
-    dataset_filter1 = dataset.loc[dataset['Home_Away'] =="Home"]
-    dataset_filter2 = dataset.loc[dataset['HA1'] == "Home"]
-    select_ha = selected_ha
-elif selected_ha=="Away":
-    dataset_filter1 = dataset.loc[dataset['Home_Away'] == "Away"]
-    dataset_filter2 = dataset.loc[dataset['HA1'] =="Away"]
-    select_ha = selected_ha
-
-if "All" in selected_season:
-    selected_season = ['2022-2023',
-                       '2023-2024', '2024-2025']
-    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Season'].isin(selected_season)]
-    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Season'].isin(selected_season)]
-    select_season = ''
-else:
-    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Season'] == selected_season]
-    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Season'] == selected_season]
-    select_season = selected_season
-
-if "All" in selected_wl:
-    selected_wl = ['Win', 'Draw', 'Lose']
-    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Result'].isin(selected_wl)]
-    select_wl = ''
-elif selected_wl=='Win':
-    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Result'] == 'Win']
-    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Result1'] == 'Win']
-    select_wl = selected_wl
-
-elif selected_wl=='Lose':
-    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Result'] == 'Lose']
-    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Result1'] == 'Lose']
-    select_wl = selected_wl
-
-elif selected_wl=='Draw':
-    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Result'] == 'Draw']
-    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Result1'] == 'Draw']
-    select_wl = selected_wl
-
-if "All" in selected_phase:
-    selected_phase = ['Regular Season', 'Play offs', "Play In",'Play out']
-    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Phase'].isin(selected_phase)]
-    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Phase'].isin(selected_phase)]
-    select_phase = ''
-else:
-    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Phase'] == selected_phase]
-    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Phase'] == selected_phase]
-    select_phase = selected_phase
-
-if "All" in selected_round:
-    selected_round = ['First Round', 'Second Round']
-    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Round'].isin(selected_round)]
-    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Round'].isin(selected_round)]
-    select_round = ''
-else:
-    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Round'] == selected_round]
-    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Round'] == selected_round]
-    select_round = selected_round
 
 
-computeTeamstats_on_games=dataset_filter1.groupby(["idseason","Team"])[[
+
+computeTeamstats_on_games=dataset.groupby(["idseason","Team","Season","Phase","Round","Result","Home_Away"])[[
        'Goals', 'Assists', 'Yellow card', 'Red card', 'Shots on target',
        'Shots off target', 'Shots blocked', 'Dribble attempts',
        'Dribble attempts succ', 'Penalty won', 'Big chances missed',
@@ -165,7 +103,7 @@ computeTeamstats_on_games["Runs out(%)"] = computeTeamstats_on_games["Runs out(%
 
 
 
-computeAgainststats_on_games=dataset_filter2.groupby(['idseason',"Team"])[[
+computeAgainststats_on_games=dataset.groupby(['idseason',"Against"])[[
        'Goals', 'Assists', 'Yellow card', 'Red card', 'Shots on target',
        'Shots off target', 'Shots blocked', 'Dribble attempts',
        'Dribble attempts succ', 'Penalty won', 'Big chances missed',
@@ -199,11 +137,78 @@ computeAgainststats_on_games["Runs out(%)"] = computeAgainststats_on_games["Runs
 
 
 
-computeAgainststats_on_games=computeAgainststats_on_games.add_prefix('opp ').rename(columns={'opp idseason':'idseason',"opp Team":"Against"})
+computeAgainststats_on_games=computeAgainststats_on_games.add_prefix('opp ').rename(columns={'opp idseason':'idseason',"opp Against":"Team"})
 
-computeteamstats_on_games_total=pd.merge(computeTeamstats_on_games,computeAgainststats_on_games,on=['idseason'])
+computeteamstats_on_games_total=pd.merge(computeTeamstats_on_games,computeAgainststats_on_games)
 
-computeteamstats_on_games_mean=computeteamstats_on_games_total.groupby('Team')[['Goals', 'Assists', 'Yellow card', 'Red card', 'Shots on target',
+
+
+if "All" in selected_ha:
+    selected_ha = ['Away', 'Home']
+    computeteamstats_on_games_total1 = computeteamstats_on_games_total.loc[computeteamstats_on_games_total['Home_Away'].isin(selected_ha)]
+
+    select_ha = ''
+elif selected_ha=="Home":
+    computeteamstats_on_games_total1 = computeteamstats_on_games_total.loc[computeteamstats_on_games_total['Home_Away'] =="Home"]
+
+    select_ha = selected_ha
+elif selected_ha=="Away":
+    computeteamstats_on_games_total1 = computeteamstats_on_games_total.loc[computeteamstats_on_games_total['Home_Away'] == "Away"]
+
+    select_ha = selected_ha
+
+if "All" in selected_season:
+    selected_season = ['2022-2023',
+                       '2023-2024', '2024-2025']
+    computeteamstats_on_games_total1 = computeteamstats_on_games_total1.loc[computeteamstats_on_games_total1['Season'].isin(selected_season)]
+
+    select_season = ''
+else:
+    computeteamstats_on_games_total1 = computeteamstats_on_games_total1.loc[computeteamstats_on_games_total1['Season'] == selected_season]
+
+    select_season = selected_season
+
+if "All" in selected_wl:
+    selected_wl = ['Win', 'Draw', 'Lose']
+    computeteamstats_on_games_total1 = computeteamstats_on_games_total1.loc[computeteamstats_on_games_total1['Result'].isin(selected_wl)]
+    select_wl = ''
+elif selected_wl=='Win':
+    computeteamstats_on_games_total1 = computeteamstats_on_games_total1.loc[computeteamstats_on_games_total1['Result'] == 'Win']
+
+    select_wl = selected_wl
+
+elif selected_wl=='Lose':
+    computeteamstats_on_games_total1 = computeteamstats_on_games_total1.loc[computeteamstats_on_games_total1['Result'] == 'Lose']
+
+    select_wl = selected_wl
+
+elif selected_wl=='Draw':
+    computeteamstats_on_games_total1 = computeteamstats_on_games_total1.loc[computeteamstats_on_games_total1['Result'] == 'Draw']
+
+    select_wl = selected_wl
+
+if "All" in selected_phase:
+    selected_phase = ['Regular Season', 'Play offs', "Play In",'Play out']
+    computeteamstats_on_games_total1 = computeteamstats_on_games_total1.loc[computeteamstats_on_games_total1['Phase'].isin(selected_phase)]
+
+    select_phase = ''
+else:
+    computeteamstats_on_games_total1 = computeteamstats_on_games_total1.loc[computeteamstats_on_games_total1['Phase'] == selected_phase]
+
+    select_phase = selected_phase
+
+if "All" in selected_round:
+    selected_round = ['First Round', 'Second Round']
+    computeteamstats_on_games_total1 = computeteamstats_on_games_total1.loc[computeteamstats_on_games_total1['Round'].isin(selected_round)]
+
+    select_round = ''
+else:
+    computeteamstats_on_games_total1 = computeteamstats_on_games_total1.loc[computeteamstats_on_games_total1['Round'] == selected_round]
+
+    select_round = selected_round
+
+
+computeteamstats_on_games_mean=computeteamstats_on_games_total1.groupby('Team')[['Goals', 'Assists', 'Yellow card', 'Red card', 'Shots on target',
        'Shots off target', 'Shots blocked', 'Dribble attempts',
        'Dribble attempts succ', 'Penalty won', 'Big chances missed',
        'Penalty miss', 'Hit woodwork', 'Defensive actions', 'Clearances',
@@ -291,7 +296,7 @@ basicselectors = st.selectbox("Select Stat:", ['Goals', 'Assists', 'Yellow card'
 total,pergame=st.tabs(['Total','Per Game'])
 regex1="Team|"+basicselectors
 with total:
-    basic_total=computeteamstats_on_games_total.groupby('Team')[["Goals","opp Goals",'Assists','opp Assists','Yellow card','opp Yellow card','Red card','opp Red card']].sum().reset_index()
+    basic_total=computeteamstats_on_games_total1.groupby('Team')[["Goals","opp Goals",'Assists','opp Assists','Yellow card','opp Yellow card','Red card','opp Red card']].sum().reset_index()
     interactive_table(basic_total.filter(regex=regex1).set_index('Team'),
     paging=False, height=900, width=100, showIndex=True,
     classes="display order-column nowrap table_with_monospace_font", searching=True,
@@ -314,7 +319,7 @@ attackselectors=st.selectbox("Select Stat:",['Shots',  'Dribble', 'Penalty', 'Bi
 total, pergame = st.tabs(['Total', 'Per Game'])
 regex1 = "Team|" + attackselectors
 with total:
-    attack_total=computeteamstats_on_games_total.groupby('Team')[['Shots on target', 'opp Shots on target','Shots off target','opp Shots off target',
+    attack_total=computeteamstats_on_games_total1.groupby('Team')[['Shots on target', 'opp Shots on target','Shots off target','opp Shots off target',
                                                                   'Shots blocked','opp Shots blocked', 'Dribble attempts succ','opp Dribble attempts succ',
          'Dribble attempts','opp Dribble attempts', 'Penalty won','opp Penalty won', 'Big chances missed',  'opp Big chances missed','Penalty miss','opp Penalty miss',
          'Hit woodwork','opp Hit woodwork', 'Offsides', 'opp Offsides']].sum().reset_index()
@@ -350,7 +355,7 @@ defenceselectors=st.selectbox("Select Stat:",['Defensive actions', 'Clearances',
 total, pergame = st.tabs(['Total', 'Per Game'])
 regex1 = "Team|" + defenceselectors
 with total:
-    defence_total=computeteamstats_on_games_total.groupby('Team')[['Defensive actions', 'opp Defensive actions','Clearances','opp Clearances',
+    defence_total=computeteamstats_on_games_total1.groupby('Team')[['Defensive actions', 'opp Defensive actions','Clearances','opp Clearances',
    'Blocked shots',  'opp Blocked shots','Interceptions', 'opp Interceptions','Total tackles', 'opp Total tackles','Dribbled past','opp Dribbled past',
    'Penalty committed', 'opp Penalty committed','Own goals', 'opp Own goals','Last man tackle','opp Last man tackle',
    'Error led to shot', 'opp Error led to shot', 'Clearance off line', 'opp Clearance off line','Error led to goal', 'opp Error led to goal']].sum().reset_index()
@@ -387,7 +392,7 @@ duelsselectors=st.selectbox("Select Stat:",['Duels',
 total, pergame = st.tabs(['Total', 'Per Game'])
 regex1 = "Team|" + duelsselectors
 with total:
-    duels_total=computeteamstats_on_games_total.groupby('Team')[['Duels', 'Duels won',
+    duels_total=computeteamstats_on_games_total1.groupby('Team')[['Duels', 'Duels won',
    'Ground duels', 'Ground duels won', 'Aerial duels', 'Aerial duels won',
    'Possession lost', 'Fouls', 'Was fouled','opp Duels',
     'opp Duels won',
@@ -446,7 +451,7 @@ passingselectors=st.selectbox("Select Stat:",['Touches','Passes',
 total, pergame = st.tabs(['Total', 'Per Game'])
 regex1 = "Team|" + passingselectors
 with total:
-    passing_total=computeteamstats_on_games_total.groupby('Team')[['Touches', 'Accurate passes', 'Total passes',
+    passing_total=computeteamstats_on_games_total1.groupby('Team')[['Touches', 'Accurate passes', 'Total passes',
    'Key passes', 'Total Crosses', 'Accurate Crosses', 'Total Long balls',
    'Accurate Long balls', 'Big chances created', 'opp Touches', 'opp Accurate passes',
     'opp Total passes',
@@ -507,7 +512,7 @@ goalkeepingselectors=st.selectbox("Select Stat:",['Saves','Punches', 'Runs out',
 total, pergame = st.tabs(['Total', 'Per Game'])
 regex1 = "Team|" + goalkeepingselectors
 with total:
-    goalkeeping_total=computeteamstats_on_games_total.groupby('Team')[['Saves',
+    goalkeeping_total=computeteamstats_on_games_total1.groupby('Team')[['Saves',
    'Punches', 'Runs out', 'Runs out succ', 'High claims',
    'Saves from inside box', 'Penalties saved','opp Saves',
    'opp Punches', 'opp Runs out',
