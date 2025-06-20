@@ -36,6 +36,22 @@ st.sidebar.markdown('''
   * ## [Goalkeeping Stats](#goalkeeping-stats)   
 
 ''', unsafe_allow_html=True)
+def ha_against_format(HA):
+    if HA == "Away":
+        return "Home"
+    elif HA == "Home":
+        return "Away"
+
+def result_against_format(results):
+    if results == "Win":
+        return "Lose"
+    elif results == "Lose":
+        return "Win"
+    elif results == "Draw":
+        return "Draw"
+
+dataset["HA1"] = dataset['Home_Away'].apply(ha_against_format)
+dataset["Result1"] = dataset['Result'].apply(result_against_format)
 st.header("Filters")
 f1,f2,f3,f4,f5=st.columns(5)
 with f1:
@@ -51,48 +67,71 @@ with f5:
 
 
 if "All" in selected_ha:
-    selected_ha = ['Away', 'Home',]
-    dataset_filter=dataset.loc[dataset['Home_Away'].isin(selected_ha)]
-    select_ha=''
-else:
-    dataset_filter=dataset.loc[dataset['Home_Away']==selected_ha]
+    selected_ha = ['Away', 'Home']
+    dataset_filter1 = dataset.loc[dataset['Home_Away'].isin(selected_ha)]
+    dataset_filter2 = dataset.loc[dataset['HA1'].isin(selected_ha)]
+    select_ha = ''
+elif selected_ha=="Home":
+    dataset_filter1 = dataset.loc[dataset['Home_Away'] =="Home"]
+    dataset_filter2 = dataset.loc[dataset['HA1'] == "Home"]
+    select_ha = selected_ha
+elif selected_ha=="Away":
+    dataset_filter1 = dataset.loc[dataset['Home_Away'] == "Away"]
+    dataset_filter2 = dataset.loc[dataset['HA1'] =="Away"]
     select_ha = selected_ha
 
 if "All" in selected_season:
-    selected_season = [ '2022-2023','2023-2024','2024-2025']
-    dataset_filter=dataset_filter.loc[dataset_filter['Season'].isin(selected_season)]
+    selected_season = ['2022-2023',
+                       '2023-2024', '2024-2025']
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Season'].isin(selected_season)]
+    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Season'].isin(selected_season)]
     select_season = ''
 else:
-    dataset_filter=dataset_filter.loc[dataset_filter['Season']==selected_season]
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Season'] == selected_season]
+    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Season'] == selected_season]
     select_season = selected_season
 
 if "All" in selected_wl:
-    selected_wl = ['Win','Draw', 'Lose']
-    dataset_filter = dataset_filter.loc[dataset_filter['Result'].isin(selected_wl)]
+    selected_wl = ['Win', 'Draw', 'Lose']
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Result'].isin(selected_wl)]
     select_wl = ''
-else:
-    dataset_filter= dataset_filter.loc[dataset_filter['Result'] == selected_wl]
+elif selected_wl=='Win':
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Result'] == 'Win']
+    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Result1'] == 'Win']
+    select_wl = selected_wl
+
+elif selected_wl=='Lose':
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Result'] == 'Lose']
+    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Result1'] == 'Lose']
+    select_wl = selected_wl
+
+elif selected_wl=='Draw':
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Result'] == 'Draw']
+    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Result1'] == 'Draw']
     select_wl = selected_wl
 
 if "All" in selected_phase:
-    selected_phase = ['Regular Season', 'Play offs',  "Play In",'Play out']
-    dataset_filter = dataset_filter.loc[dataset_filter['Phase'].isin(selected_phase)]
+    selected_phase = ['Regular Season', 'Play offs', "Play In",'Play out']
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Phase'].isin(selected_phase)]
+    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Phase'].isin(selected_phase)]
     select_phase = ''
 else:
-    dataset_filter = dataset_filter.loc[dataset_filter['Phase'] == selected_phase]
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Phase'] == selected_phase]
+    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Phase'] == selected_phase]
     select_phase = selected_phase
 
 if "All" in selected_round:
-    selected_round = ['First Round', 'Second Round', ]
-    dataset_filter = dataset_filter.loc[dataset_filter['Round'].isin(selected_round)]
+    selected_round = ['First Round', 'Second Round']
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Round'].isin(selected_round)]
+    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Round'].isin(selected_round)]
     select_round = ''
 else:
-    dataset_filter = dataset_filter.loc[dataset_filter['Round'] == selected_round]
+    dataset_filter1 = dataset_filter1.loc[dataset_filter1['Round'] == selected_round]
+    dataset_filter2 = dataset_filter2.loc[dataset_filter2['Round'] == selected_round]
     select_round = selected_round
 
 
-
-computeTeamstats_on_games=dataset_filter.groupby(["idseason",'Team'])[[
+computeTeamstats_on_games=dataset_filter1.groupby(["idseason","Team"])[[
        'Goals', 'Assists', 'Yellow card', 'Red card', 'Shots on target',
        'Shots off target', 'Shots blocked', 'Dribble attempts',
        'Dribble attempts succ', 'Penalty won', 'Big chances missed',
@@ -126,7 +165,7 @@ computeTeamstats_on_games["Runs out(%)"] = computeTeamstats_on_games["Runs out(%
 
 
 
-computeAgainststats_on_games=dataset_filter.groupby(['idseason','Against'])[[
+computeAgainststats_on_games=dataset_filter2.groupby(['idseason',"Team"])[[
        'Goals', 'Assists', 'Yellow card', 'Red card', 'Shots on target',
        'Shots off target', 'Shots blocked', 'Dribble attempts',
        'Dribble attempts succ', 'Penalty won', 'Big chances missed',
@@ -160,11 +199,9 @@ computeAgainststats_on_games["Runs out(%)"] = computeAgainststats_on_games["Runs
 
 
 
-computeAgainststats_on_games=computeAgainststats_on_games.add_prefix('opp ').rename(columns={'opp Against':'Team','opp idseason':'idseason'})
+computeAgainststats_on_games=computeAgainststats_on_games.add_prefix('opp ').rename(columns={'opp idseason':'idseason',"opp Team":"Against"})
 
-computeteamstats_on_games_total=pd.merge(computeTeamstats_on_games,computeAgainststats_on_games,on=['Team','idseason'])
-
-
+computeteamstats_on_games_total=pd.merge(computeTeamstats_on_games,computeAgainststats_on_games,on=['idseason'])
 
 computeteamstats_on_games_mean=computeteamstats_on_games_total.groupby('Team')[['Goals', 'Assists', 'Yellow card', 'Red card', 'Shots on target',
        'Shots off target', 'Shots blocked', 'Dribble attempts',
